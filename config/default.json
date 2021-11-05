@@ -1,0 +1,13 @@
+{
+  "logger": {
+    "name": "adapter-gfw-DEV",
+    "level": "debug",
+    "toFile": false,
+    "dirLogFile": null
+  },
+  "service": {
+    "id": "adapter-gfw",
+    "name": "Adapter GFW",
+    "port": 3025
+  }
+}
