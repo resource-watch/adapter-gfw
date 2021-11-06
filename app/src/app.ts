@@ -1,4 +1,3 @@
-import config from 'config';
 import { Server } from 'http';
 import Koa from 'koa';
 import koaBody from 'koa-body';
@@ -10,8 +9,7 @@ import cors from '@koa/cors';
 import koaSimpleHealthCheck from 'koa-simple-healthcheck';
 
 import logger from 'logger';
-// @ts-ignore
-import { loadRoutes } from 'loader';
+
 import ErrorSerializer from 'serializers/errorSerializer';
 import router from 'routes/api/v1/gfw.router'
 
@@ -67,10 +65,9 @@ const init: () => Promise<IInit> = async (): Promise<IInit> => {
             fastlyServiceId: process.env.FASTLY_SERVICEID,
             fastlyAPIKey: process.env.FASTLY_APIKEY
         }));
-
         app.use(koaLogger());
-        // loadRoutes(app);
-        app.use(router.routes()).use(router.allowedMethods())
+
+        app.use(router.routes())
 
         const port: string = process.env.PORT || '9000';
 
