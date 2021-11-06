@@ -1,7 +1,7 @@
 import { Context, Next } from 'koa';
 
-const logger = require('logger');
-const DatasetService = require('services/dataset.service');
+import logger from 'logger';
+import DatasetService from 'services/dataset.service';
 
 class DatasetMiddleware {
 

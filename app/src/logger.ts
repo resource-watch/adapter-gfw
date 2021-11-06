@@ -12,7 +12,6 @@ const streams: Record<string, unknown>[] = [
     },
 ];
 
-console.log(streams)
 
 if (config.get('logger.toFile')) {
     streams.push({

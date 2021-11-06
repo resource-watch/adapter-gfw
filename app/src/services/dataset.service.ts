@@ -1,15 +1,17 @@
-const { RWAPIMicroservice } = require('rw-api-microservice-node');
-const logger = require('logger');
-const DatasetNotFound = require('errors/datasetNotFound.error');
+import { RWAPIMicroservice } from 'rw-api-microservice-node';
+import logger from 'logger';
+
+// @ts-ignore
+import DatasetNotFound from 'errors/datasetNotFound.error';
 
 class DatasetService {
 
-    static async getDatasetById(datasetId) {
+    static async getDatasetById(datasetId: string) {
         logger.info(`[DatasetService - getDatasetById] Validating presence of dataset with id: ${datasetId}`);
 
         try {
             const dataset = await RWAPIMicroservice.requestToMicroservice({
-                uri: `/dataset/${datasetId}`,
+                uri: `/v1/dataset/${datasetId}`,
                 method: 'GET',
                 json: true
             });
@@ -26,4 +28,4 @@ class DatasetService {
 
 }
 
-module.exports = DatasetService;
+export default DatasetService;
