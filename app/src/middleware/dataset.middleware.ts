@@ -5,15 +5,15 @@ import DatasetService from 'services/dataset.service';
 
 class DatasetMiddleware {
 
-    static async getDatasetById(ctx: Context, next: Next) {
-        const datasetId = ctx.params.dataset;
+    static async getDatasetById(ctx: Context, next: Next): Promise<void> {
+        const datasetId: string = ctx.params.dataset;
         logger.debug('[DatasetRouter - getDatasetById] - Dataset id', datasetId);
 
         if (!datasetId) {
             ctx.throw(400, 'Invalid request');
         }
 
-        const dataset = await DatasetService.getDatasetById(datasetId);
+        const dataset: Record<string, any> = await DatasetService.getDatasetById(datasetId);
 
         if (!dataset) {
             ctx.throw(404, 'Dataset not found');

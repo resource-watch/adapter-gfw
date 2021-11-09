@@ -11,7 +11,7 @@ import koaSimpleHealthCheck from 'koa-simple-healthcheck';
 import logger from 'logger';
 
 import ErrorSerializer from 'serializers/errorSerializer';
-import router from 'routes/api/v1/gfw.router'
+import router from 'routes/api/v1/gfw.router';
 
 interface IInit {
     server: Server;
@@ -67,7 +67,7 @@ const init: () => Promise<IInit> = async (): Promise<IInit> => {
         }));
         app.use(koaLogger());
 
-        app.use(router.routes())
+        app.use(router.routes());
 
         const port: string = process.env.PORT || '9000';
 

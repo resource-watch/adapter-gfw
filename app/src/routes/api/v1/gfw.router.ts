@@ -49,8 +49,8 @@ class GfwRouter {
         const fields: Record<string, any> = await GfwService.getFields(ctx.request.body.dataset.connectorUrl);
         ctx.body = FieldSerializer.serialize(fields.data);
     }   
-
 }
+
 router.get('/fields/:dataset', DatasetMiddleware.getDatasetById, GfwRouter.fields);
 router.post('/rest-datasets/gfw', GfwRouter.registerDataset);
 
