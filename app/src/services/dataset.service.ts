@@ -4,14 +4,18 @@ import logger from 'logger';
 // @ts-ignore
 import DatasetNotFound from 'errors/datasetNotFound.error';
 
+interface Dataset {
+    id: string;
+    type: string;
+}
 class DatasetService {
 
-    static async getDatasetById(datasetId: string) {
+    static async getDatasetById(datasetId: string): Promise<Record<string, any>> {
         logger.info(`[DatasetService - getDatasetById] Validating presence of dataset with id: ${datasetId}`);
 
         try {
-            const dataset = await RWAPIMicroservice.requestToMicroservice({
-                uri: `/v1/dataset/${datasetId}`,
+            const dataset: Record<string, any> = await RWAPIMicroservice.requestToMicroservice({
+                uri: `/${process.env.API_VERSION}/dataset/${datasetId}`,
                 method: 'GET',
                 json: true
             });
