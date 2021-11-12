@@ -54,7 +54,8 @@ class GfwRouter {
         logger.info('Executing query');
         // @ts-ignore
         const queryResults: Record<string, any> = await GfwService.executeQuery(
-            ctx.request.body.dataset.connectorUrl, ctx.query.sql);
+            ctx.request.body.dataset.connectorUrl, ctx.query.sql,
+            ctx.query.geostore_origin, ctx.query.geostore_id);
         ctx.body = queryResults;
     }
 }
