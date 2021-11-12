@@ -7,6 +7,7 @@ import FieldSerializer from 'serializers/field.serializer';
 import logger from 'logger';
 import DatasetMiddleware from 'middleware/dataset.middleware';
 import GfwService from 'services/gfw.service';
+import ErrorSerializer from 'serializers/errorSerializer';
 
 const router: Router = new Router({
     prefix: `/api/${process.env.API_VERSION}/gfw`,
@@ -57,6 +58,34 @@ class GfwRouter {
             ctx.request.body.dataset.connectorUrl, ctx.query.sql,
             ctx.query.geostore_origin, ctx.query.geostore_id);
         ctx.body = queryResults;
+    }
+
+    static async download(ctx: Context): Promise<void> {
+        try {
+            const format: string = ctx.query.format ? ctx.query.format : 'csv';
+            logger.debug('download format', format);
+            let mimetype: string;
+            switch (format) {
+
+                case 'csv':
+                    mimetype = 'text/csv';
+                    break;
+                case 'json':
+                default:
+                    mimetype = 'application/json';
+                    break;
+            }
+            // @ts-ignore
+            const queryResults: Record<string, any> = await GfwService.download(
+                ctx.request.body.dataset.connectorUrl, ctx.query.sql,
+                ctx.query.geostore_origin, ctx.query.geostore_id, format);
+            ctx.body = queryResults;
+            ctx.set('Content-disposition', `attachment; filename=${ctx.request.body.dataset.id}.${format}`);
+            ctx.set('Content-type', mimetype);
+        } catch (err) {
+            ctx.body = ErrorSerializer.serializeError(err.statusCode || 500, err.error && err.error.error ? err.error.error[0] : err.message);
+            ctx.status = 500;
+        }
     }
 }
 
@@ -137,6 +166,7 @@ router.get('/fields/:dataset', DatasetMiddleware.getDatasetById, GfwRouter.field
 router.post('/rest-datasets/gfw', GfwRouter.registerDataset);
 router.get('/query/:dataset', DatasetMiddleware.getDatasetById, toSQLMiddleware, GfwRouter.query);
 router.post('/query/:dataset', DatasetMiddleware.getDatasetById, toSQLMiddleware, GfwRouter.query);
-
+router.get('/download/:dataset', DatasetMiddleware.getDatasetById, toSQLMiddleware, GfwRouter.download);
+router.post('/download/:dataset', DatasetMiddleware.getDatasetById, toSQLMiddleware, GfwRouter.download);
 
 export default router;
