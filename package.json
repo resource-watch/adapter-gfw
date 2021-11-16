@@ -5,8 +5,8 @@
   "repository": "https://github.com/resource-watch/adapter-gfw",
   "main": "index.js",
   "scripts": {
-    "coverage": "nyc ts-mocha -b --project tsconfig.json -r tsconfig-paths/register --timeout 20000 'test/**/*.js' --exit",
-    "test": "ts-mocha -b --project tsconfig.json -r tsconfig-paths/register --timeout 20000 'test/**/*.js' --exit",
+    "coverage": "nyc ts-mocha -b --project tsconfig.json -r tsconfig-paths/register --timeout 20000 'app/test/**/*.ts' --exit",
+    "test": "ts-mocha -b --project tsconfig.json -r tsconfig-paths/register --timeout 20000 'app/test/**/*.ts' --exit",
     "start": "ts-node --files --project tsconfig.json -r tsconfig-paths/register app/src/index.ts",
     "watch": "ts-node-dev --respawn --transpile-only --files --project tsconfig.json -r tsconfig-paths/register app/src/index.ts",
     "lint": "tslint --project tsconfig.json"
@@ -42,6 +42,7 @@
     "@types/koa-logger": "^3.1.1",
     "@types/request": "^2.48.7",
     "@types/sleep": "^0.0.8",
+    "axios-mock-adapter": "^1.20.0",
     "chai": "^4.2.0",
     "chai-datetime": "^1.5.0",
     "chai-http": "^4.3.0",
