@@ -6,15 +6,16 @@ cache:
     - "node_modules"
 env:
   global:
-    - CC_TEST_REPORTER_ID=223745d317ddaa4ae0995cd0fdc4f322d2c08142696129a7dcbaea8af43d7eb0
-    - NODE_ENV=test
-    - PORT=3001
-    - API_VERSION=v1
-    - LOCAL_URL=http://127.0.0.1:3001
-    - CT_URL=http://127.0.0.1:9000
-    - CT_REGISTER_MODE=auto
-    - CT_TOKEN=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Im1pY3Jvc2VydmljZSIsImNyZWF0ZWRBdCI6IjIwMTYtMDktMTQifQ.IRCIRm1nfIQTfda_Wb6Pg-341zhV8soAgzw7dd5HxxQ
+    - GATEWAY_URL=http://mymachine:9000
     - FASTLY_ENABLED=false
+    - MICROSERVICE_TOKEN=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Im1pY3Jvc2VydmljZSIsImNyZWF0ZWRBdCI6IjIwMTYtMDktMTQifQ.IRCIRm1nfIQTfda_Wb6Pg-341zhV8soAgzw7dd5HxxQ
+    - export NODE_PATH=app/src
+    - API_VERSION=v1
+    - CT_TOKEN=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Im1pY3Jvc2VydmljZSIsImNyZWF0ZWRBdCI6IjIwMTYtMDktMTQifQ.IRCIRm1nfIQTfda_Wb6Pg-341zhV8soAgzw7dd5HxxQ
+    - LOCAL_URL=http://mymachine:3025
+    - PORT=3025
+    - export CT_REGISTER_MODE=manual
+    - CT_URL=http://mymachine:9000
 
 before_script:
   - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
