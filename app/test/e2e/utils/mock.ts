@@ -1,7 +1,7 @@
 import logger from 'logger';
 import nock from 'nock';
 
-import { DEFAULT_RESPONSE_SQL_QUERY } from './test.constants';
+import { DEFAULT_RESPONSE_SQL_QUERY, DATASET_ATTRS } from './test.constants';
 
 export const createMockConvertSQL: (sqlQuery: string) => void = (
   sqlQuery: string
@@ -45,36 +45,7 @@ export const createMockGetDataset: (
     id,
     type: 'dataset',
     attributes: {
-      name: 'Test dataset 1',
-      slug: 'test-dataset-1',
-      type: 'tabular',
-      subtitle: null,
-      application: ['gfw'],
-      dataPath: null,
-      attributesPath: null,
-      connectorType: 'rest',
-      provider: 'gfw',
-      userId: '1',
-      connectorUrl:
-        'https://data-api.globalforestwatch.org/dataset/nasa_viirs_fire_alerts/latest',
-      sources: [],
-      tableName: 'data',
-      status: 'saved',
-      published: false,
-      overwrite: true,
-      mainDateField: null,
-      env: 'production',
-      geoInfo: false,
-      protected: false,
-      clonedHost: {},
-      legend: {},
-      errorMessage: null,
-      taskId: null,
-      createdAt: '2016-08-01T15:28:15.050Z',
-      updatedAt: '2018-01-05T18:15:23.266Z',
-      dataLastUpdated: null,
-      widgetRelevantProps: [],
-      layerRelevantProps: [],
+      ...DATASET_ATTRS,
       ...otherData,
     },
   };
