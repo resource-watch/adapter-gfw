@@ -27,12 +27,12 @@ export const createMockConvertSQL: (sqlQuery: string) => void = (
       },
     });
 
-export const createMockSQLQuery: (sqlQuery: string) => void = (
-  sqlQuery: string
-) =>
+export const createMockSQLQuery: (sql: string) => void = (sql: string) => {
+  const encodedSql: string = encodeURIComponent(sql);
   nock('https://data-api.globalforestwatch.org')
-    .get(`/dataset/nasa_viirs_fire_alerts/latest/query?sql=${sqlQuery}`)
+    .get(`/dataset/nasa_viirs_fire_alerts/latest/query?sql=${encodedSql}`)
     .reply(200, DEFAULT_RESPONSE_SQL_QUERY);
+};
 
 export const createMockRegisterDataset: (id: string) => void = (id) =>
   nock(process.env.CT_URL).patch(`/v1/dataset/${id}`).reply(200, {});
