@@ -6,6 +6,7 @@ cache:
     - "node_modules"
 env:
   global:
+    - CC_TEST_REPORTER_ID=27363c2a463b66987ca0d81b2cb0f4779635780c3d54e983491e9aa844e5344d
     - GATEWAY_URL=http://127.0.0.1:9000
     - FASTLY_ENABLED=false
     - NODE_ENV=test
