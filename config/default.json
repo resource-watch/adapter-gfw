@@ -8,6 +8,6 @@
   "service": {
     "id": "adapter-gfw",
     "name": "Adapter GFW",
-    "port": 3025
+    "port": 5000
   }
 }
