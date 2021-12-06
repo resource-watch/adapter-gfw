@@ -13,7 +13,7 @@ case "$1" in
         docker-compose -f docker-compose-test.yml build && docker-compose -f docker-compose-test.yml up
         ;;
   *)
-        echo "Usage: controlTower.sh {start|develop|test}" >&2
+        echo "Usage: gfw_adapter.sh {start|develop|test}" >&2
         exit 1
         ;;
 esac
