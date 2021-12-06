@@ -47,7 +47,7 @@ class GfwService {
     sqlQuery: string,
     geostoreOrigin: string,
     geostoreId: string,
-    format: 'csv' | 'json' = 'json'
+    format: string = 'json'
   ): Promise<Record<string, any>> {
     let reqUrl: string = `${urlDataset}/download/${format}?sql=${sqlQuery}`;
 

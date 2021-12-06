@@ -78,9 +78,9 @@ class GfwRouter {
     logger.info('Executing query');
     const queryResults: Record<string, any> = await GfwService.executeQuery(
       ctx.request.body.dataset.connectorUrl,
-      ctx.query.sql,
-      ctx.query.geostore_origin,
-      ctx.query.geostore_id,
+      ctx.query.sql as string,
+      ctx.query.geostore_origin as string,
+      ctx.query.geostore_id as string,
       cloneUrl
     );
     ctx.body = queryResults;
@@ -88,7 +88,7 @@ class GfwRouter {
 
   static async download(ctx: Context): Promise<void> {
     try {
-      const format: string = ctx.query.format ? ctx.query.format : 'csv';
+      const format: string = ctx.query.format ? ctx.query.format as string : 'csv';
       logger.debug('download format', format);
       let mimetype: string;
       switch (format) {
@@ -100,12 +100,11 @@ class GfwRouter {
           mimetype = 'application/json';
           break;
       }
-      // @ts-ignore
       const queryResults: Record<string, any> = await GfwService.download(
         ctx.request.body.dataset.connectorUrl,
-        ctx.query.sql,
-        ctx.query.geostore_origin,
-        ctx.query.geostore_id,
+        ctx.query.sql as string,
+        ctx.query.geostore_origin as string,
+        ctx.query.geostore_id as string,
         format
       );
       ctx.body = queryResults;
