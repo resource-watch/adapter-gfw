@@ -1,0 +1,66 @@
+{
+  "name": "GFW Adapter",
+  "cache": [
+    "query-gfw"
+  ],
+  "uncache": [
+    "query-carto"
+  ],
+  "tags": [
+    "rw"
+  ],
+  "endpoints": [
+    {
+      "path": "/v1/query/gfw/:dataset",
+      "method": "GET",
+      "binary": true,
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/gfw/query/:dataset"
+      }
+    },
+    {
+      "path": "/v1/query/gfw/:dataset",
+      "method": "POST",
+      "binary": true,
+      "redirect": {
+        "method": "POST",
+        "path": "/api/v1/gfw/query/:dataset"
+      }
+    },
+    {
+      "path": "/v1/download/gfw/:dataset",
+      "method": "GET",
+      "binary": true,
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/gfw/download/:dataset"
+      }
+    },
+    {
+      "path": "/v1/download/gfw/:dataset",
+      "method": "POST",
+      "binary": true,
+      "redirect": {
+        "method": "POST",
+        "path": "/api/v1/gfw/download/:dataset"
+      }
+    },
+    {
+      "path": "/v1/fields/gfw/:dataset",
+      "method": "GET",
+      "redirect": {
+        "method": "GET",
+        "path": "/api/v1/gfw/fields/:dataset"
+      }
+    },
+    {
+      "path": "/v1/rest-datasets/gfw",
+      "method": "POST",
+      "redirect": {
+        "method": "POST",
+        "path": "/api/v1/gfw/rest-datasets/gfw"
+      }
+    }
+  ]
+}
