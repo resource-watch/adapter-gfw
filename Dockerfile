@@ -1,18 +1,20 @@
-FROM node:12-alpine
-MAINTAINER info@vizzuality.com
+FROM node:16-alpine
 
-ENV NAME rw-adapter-carto
-ENV USER rw-adapter-carto
+ENV NAME rw-adapter-gfw
+ENV USER rw-adapter-gfw
 
 RUN apk update && apk upgrade && \
-    apk add --no-cache --update bash git openssh python alpine-sdk
+    apk add --no-cache --update bash git openssh python3 alpine-sdk
 
 RUN addgroup $USER && adduser -s /bin/bash -D -G $USER $USER
 
-RUN yarn global add grunt-cli bunyan
+RUN mkdir -p /home/$USER/.cache/yarn
+RUN chown -R $USER:$USER /home/$USER
+RUN yarn global add bunyan
 
 RUN mkdir -p /opt/$NAME
 COPY package.json /opt/$NAME/package.json
+COPY tsconfig.json /opt/$NAME/tsconfig.json
 COPY yarn.lock /opt/$NAME/yarn.lock
 RUN cd /opt/$NAME && yarn
 
