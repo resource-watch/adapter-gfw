@@ -6,7 +6,7 @@ import { DEFAULT_RESPONSE_SQL_QUERY, DATASET_ATTRS } from './test.constants';
 export const createMockConvertSQL: (sqlQuery: string) => void = (
   sqlQuery: string
 ) =>
-  nock(process.env.CT_URL, { encodedQueryParams: true })
+  nock(process.env.GATEWAY_URL, { encodedQueryParams: true })
     .get(
       `/v1/convert/sql2SQL?sql=${encodeURIComponent(
         sqlQuery
@@ -35,7 +35,7 @@ export const createMockSQLQuery: (sql: string) => void = (sql: string) => {
 };
 
 export const createMockRegisterDataset: (id: string) => void = (id) =>
-  nock(process.env.CT_URL).patch(`/v1/dataset/${id}`).reply(200, {});
+  nock(process.env.GATEWAY_URL).patch(`/v1/dataset/${id}`).reply(200, {});
 
 export const createMockGetDataset: (
   id: string,
@@ -50,7 +50,7 @@ export const createMockGetDataset: (
     },
   };
 
-  nock(process.env.CT_URL).get(`/v1/dataset/${id}`).reply(200, {
+  nock(process.env.GATEWAY_URL).get(`/v1/dataset/${id}`).reply(200, {
     data: dataset,
   });
 

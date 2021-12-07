@@ -12,8 +12,10 @@ import DatasetMiddleware from 'middleware/dataset.middleware';
 import GfwService from 'services/gfw.service';
 import ErrorSerializer from 'serializers/errorSerializer';
 
+const API_VERSION: string = 'v1';
+
 const router: Router = new Router({
-  prefix: `/api/${process.env.API_VERSION}/gfw`,
+  prefix: `/api/${API_VERSION}/gfw`,
 });
 
 class GfwRouter {
@@ -25,7 +27,7 @@ class GfwRouter {
         dataset: {
           datasetUrl: url
             .replace('/gfw', '')
-            .replace(`/api/${process.env.API_VERSION}`, ''),
+            .replace(`/api/${API_VERSION}`, ''),
           application: ['your', 'apps'],
         },
       },
@@ -38,7 +40,7 @@ class GfwRouter {
       await GfwService.getFields(ctx.request.body.connector.connectorUrl);
       await RWAPIMicroservice.requestToMicroservice({
         method: 'PATCH',
-        uri: `/${process.env.API_VERSION}/dataset/${ctx.request.body.connector.id}`,
+        uri: `/${API_VERSION}/dataset/${ctx.request.body.connector.id}`,
         body: {
           dataset: {
             status: 1,
@@ -49,7 +51,7 @@ class GfwRouter {
     } catch (e) {
       await RWAPIMicroservice.requestToMicroservice({
         method: 'PATCH',
-        uri: `/${process.env.API_VERSION}/dataset/${ctx.request.body.connector.id}`,
+        uri: `/${API_VERSION}/dataset/${ctx.request.body.connector.id}`,
         body: {
           dataset: {
             status: 2,
@@ -88,7 +90,9 @@ class GfwRouter {
 
   static async download(ctx: Context): Promise<void> {
     try {
-      const format: string = ctx.query.format ? ctx.query.format as string : 'csv';
+      const format: string = ctx.query.format
+        ? (ctx.query.format as string)
+        : 'csv';
       logger.debug('download format', format);
       let mimetype: string;
       switch (format) {
@@ -151,9 +155,7 @@ const toSQLMiddleware: (ctx: Context, next: Next) => Promise<void> = async (
 
   if (ctx.query.sql || ctx.request.body.sql) {
     const params: Record<string, any> = { ...ctx.query, ...ctx.request.body };
-    options.uri = `${
-      process.env.API_VERSION
-    }/convert/sql2SQL?sql=${encodeURIComponent(
+    options.uri = `${API_VERSION}/convert/sql2SQL?sql=${encodeURIComponent(
       params.sql
     )}&experimental=true&raster=${ctx.request.body.dataset.type === 'raster'}`;
     logger.debug(`Checking sql correct: ${params.sql}`);

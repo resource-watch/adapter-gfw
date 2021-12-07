@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
+    app: rw
     name: gfw
   name: gfw
 spec:
@@ -39,23 +40,6 @@ spec:
               value: prod
             - name: NODE_PATH
               value: app/src
-            - name: LOCAL_URL
-              value: http://gfw.default.svc.cluster.local:5000
-            - name: CT_URL
-              valueFrom:
-                secretKeyRef:
-                  key: CT_URL
-                  name: mssecrets
-            - name: CT_TOKEN
-              valueFrom:
-                secretKeyRef:
-                  key: CT_TOKEN
-                  name: mssecrets
-            - name: CT_REGISTER_MODE
-              valueFrom:
-                secretKeyRef:
-                  key: CT_REGISTER_MODE
-                  name: mssecrets
             - name: GATEWAY_URL
               valueFrom:
                 secretKeyRef:
@@ -65,11 +49,6 @@ spec:
               valueFrom:
                 secretKeyRef:
                   key: MICROSERVICE_TOKEN
-                  name: mssecrets
-            - name: API_VERSION
-              valueFrom:
-                secretKeyRef:
-                  key: API_VERSION
                   name: mssecrets
             - name: FASTLY_ENABLED
               valueFrom:

@@ -96,10 +96,6 @@ Follow the instruction above for setting up the runtime environment for Docker e
 - NODE_PATH: path => relative path to the source code. Should be `app/src`.
 - MICROSERVICE_TOKEN: string => Admin role token to use with the authorization microservice.
 - GATEWAY_URL: URL => AWS Gateway URL in cloud deployment and Control Tower URL in dev.
-- CT_URL: URL => Control Tower URL and port.
-- LOCAL_URL: URL => Microservice URL and port.
-- CT_REGISTER_MODE: string => Whether to register microservice with Control Tower. The value of auto registers microservice with Control Tower on spin up.
-- API_VERSION: string => API version string that's used as route prefix and composing URLs.
 - FASTLY_ENABLED: boolean => Whether to enable Fastly caching.
 
 You can optionally set other variables, see [this file](config/custom-environment-variables.json) for an extended list.
