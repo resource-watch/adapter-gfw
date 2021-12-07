@@ -29,7 +29,7 @@ class DatasetMiddleware {
 
         ctx.request.body.dataset = {
             id: dataset.id,
-            ...dataset.attributes
+            ...dataset.attributes,
         };
 
         await next();

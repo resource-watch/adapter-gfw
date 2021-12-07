@@ -13,7 +13,7 @@ export default class UserSerializer {
             updatedAt: el.updatedAt ? el.updatedAt.toISOString() : null,
             role: el.role,
             provider: el.provider,
-            extraUserData: el.extraUserData
+            extraUserData: el.extraUserData,
         };
     }
 

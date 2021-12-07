@@ -26,7 +26,7 @@ const init: () => Promise<IInit> = async (): Promise<IInit> => {
             multipart: true,
             jsonLimit: '50mb',
             formLimit: '50mb',
-            textLimit: '50mb'
+            textLimit: '50mb',
         }));
         app.use(koaSimpleHealthCheck());
 
@@ -63,7 +63,7 @@ const init: () => Promise<IInit> = async (): Promise<IInit> => {
             skipGetLoggedUser: true,
             fastlyEnabled: process.env.FASTLY_ENABLED as boolean | 'true' | 'false',
             fastlyServiceId: process.env.FASTLY_SERVICEID,
-            fastlyAPIKey: process.env.FASTLY_APIKEY
+            fastlyAPIKey: process.env.FASTLY_APIKEY,
         }));
         app.use(koaLogger());
 

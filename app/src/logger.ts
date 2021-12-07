@@ -5,10 +5,10 @@ import type Logger from 'bunyan';
 const streams: Record<string, unknown>[] = [
     {
         stream: process.stdout,
-        level: config.get('logger.level') || 'debug'
+        level: config.get('logger.level') || 'debug',
     }, {
         stream: process.stderr,
-        level: 'warn'
+        level: 'warn',
     },
 ];
 
@@ -16,7 +16,7 @@ const streams: Record<string, unknown>[] = [
 if (config.get('logger.toFile')) {
     streams.push({
         level: config.get('logger.level') || 'debug',
-        path: config.get('logger.dirLogFile')
+        path: config.get('logger.dirLogFile'),
     });
 }
 
