@@ -34,7 +34,7 @@ spec:
             - start
           env:
             - name: PORT
-              value: "5000"   # ensure that this port matches what's specified in the service https://github.com/resource-watch/api-infrastructure/tree/production/terraform-k8s-infrastructure/modules/k8s_microservice_routing
+              value: "3025" # ensure that this port matches what's specified in the service https://github.com/resource-watch/api-infrastructure/tree/production/terraform-k8s-infrastructure/modules/k8s_microservice_routing
             - name: NODE_ENV
               value: staging
             - name: NODE_PATH
@@ -72,7 +72,7 @@ spec:
             failureThreshold: 3
             httpGet:
               path: /healthcheck
-              port: 5000
+              port: 3025
               scheme: HTTP
             initialDelaySeconds: 30
             periodSeconds: 15
@@ -80,13 +80,13 @@ spec:
             timeoutSeconds: 5
           name: gfw-adapter
           ports:
-            - containerPort: 5000
+            - containerPort: 3025
               protocol: TCP
           readinessProbe:
             failureThreshold: 3
             httpGet:
               path: /healthcheck
-              port: 5000
+              port: 3025
               scheme: HTTP
             initialDelaySeconds: 30
             periodSeconds: 15
