@@ -5,8 +5,16 @@ module.exports = {
     tsconfigDir: __dirname,
     project: ["./tsconfig.json"],
   },
-  plugins: ["@typescript-eslint"],
+  plugins: ["@typescript-eslint", "mocha"],
   extends: ["airbnb-typescript"],
+  globals: {
+    describe: true,
+    it: true,
+    before: true,
+    after: true,
+    beforeEach: true,
+    afterEach: true,
+  },
   rules: {
     "import/no-extraneous-dependencies": 0,
     "react/jsx-filename-extension": 0,
