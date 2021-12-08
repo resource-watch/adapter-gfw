@@ -8,9 +8,9 @@ funcionality, which is exposed on the `/gfw` endpoint.
 
 ## Dependencies
 
-You will need [Control Tower](https://github.com/resource-watch/control-tower) up and running - either natively or with Docker. Refer to the project's README for information on how to set it up.
+<!-- TODO: Add localstack local dev dependency when it's functional -->
 
-The Dataset microservice is built using [Node.js](https://nodejs.org/en/), and can be executed either natively or using Docker, each of which has its own set of requirements.
+The GFW Adapter microservice is built using [Node.js](https://nodejs.org/en/), and can be executed either natively or using Docker, each of which has its own set of requirements.
 
 Native execution requires:
 
@@ -24,10 +24,10 @@ Execution using Docker requires:
 
 Dependencies on other Microservices:
 
+- [Authorization](https://github.com/resource-watch/authorization)
 - [Dataset](https://github.com/resource-watch/dataset/)
 - [Converter](https://github.com/resource-watch/converter)
-- [Control Tower](https://github.com/resource-watch/control-tower)
-
+- [Query](https://github.com/resource-watch/query)
 
 ## Getting started
 
@@ -42,21 +42,24 @@ After that, follow one of the instructions below:
 ### Using native execution
 
 1 - Set up your environment variables. See `dev.env.sample` for a list of variables you should set, which are described in detail in [this section](#environment-variables) of the documentation. Native execution will NOT load the `dev.env` file content, so you need to use another way to define those values. One option is to export them from `dev.env`:
+
 ```
 export $(xargs < dev.env)
 ```
 
 2 - Install node dependencies using yarn:
+
 ```
 yarn
 ```
 
 3 - Start the application server:
+
 ```
 yarn start
 ```
 
-The endpoints provided by this microservice should now be available through Control Tower's URL.
+# TODO
 
 ### Using Docker
 
@@ -68,7 +71,7 @@ The endpoints provided by this microservice should now be available through Cont
 ./gfw_adapter.sh develop
 ```
 
-The endpoints provided by this microservice should now be available through Control Tower's URL.
+ <!-- TODO: Add sentence on how to connect to the MS via localstack when it's functional -->
 
 ## Testing
 
@@ -77,6 +80,7 @@ There are two ways to run the included tests:
 ### Using native execution
 
 Follow the instruction above for setting up the runtime environment for native execution, then run:
+
 ```
 yarn test
 ```
@@ -84,6 +88,7 @@ yarn test
 ### Using Docker
 
 Follow the instruction above for setting up the runtime environment for Docker execution, then run:
+
 ```
 ./gfw_adapter.sh test
 ```
@@ -95,7 +100,7 @@ Follow the instruction above for setting up the runtime environment for Docker e
 - PORT: number => TCP port in which the service will run.
 - NODE_PATH: path => relative path to the source code. Should be `app/src`.
 - MICROSERVICE_TOKEN: string => Admin role token to use with the authorization microservice.
-- GATEWAY_URL: URL => AWS Gateway URL in cloud deployment and Control Tower URL in dev.
+- GATEWAY_URL: URL => AWS Gateway URL in cloud deployment. <!--TODO: add localstack when it's functional -->
 - FASTLY_ENABLED: boolean => Whether to enable Fastly caching.
 
 You can optionally set other variables, see [this file](config/custom-environment-variables.json) for an extended list.
