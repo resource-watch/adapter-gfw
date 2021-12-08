@@ -59,7 +59,7 @@ yarn
 yarn start
 ```
 
-# TODO
+ <!-- TODO: Add sentence on how to connect to the MS via localstack when it's functional -->
 
 ### Using Docker
 
