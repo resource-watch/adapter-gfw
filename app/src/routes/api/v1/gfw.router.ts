@@ -127,16 +127,6 @@ class GfwRouter {
     }
 }
 
-const serializeObjToQuery: (obj: Record<string, any>) => string = (
-    obj: Record<string, any>,
-) =>
-    Object.keys(obj)
-        .reduce((a, k) => {
-            a.push(`${k}=${encodeURIComponent(obj[k])}`);
-            return a;
-        }, [])
-        .join('&');
-
 const toSQLMiddleware: (ctx: Context, next: Next) => Promise<void> = async (
     ctx: Context,
     next: Next,
@@ -153,35 +143,19 @@ const toSQLMiddleware: (ctx: Context, next: Next) => Promise<void> = async (
         return;
     }
 
-    if (ctx.query.sql || ctx.request.body.sql) {
-        const params: Record<string, any> = { ...ctx.query, ...ctx.request.body };
-        options.uri = `${API_VERSION}/convert/sql2SQL?sql=${encodeURIComponent(
-            params.sql,
-        )}&experimental=true&raster=${ctx.request.body.dataset.type === 'raster'}`;
-        logger.debug(`Checking sql correct: ${params.sql}`);
+    const params: Record<string, any> = { ...ctx.query, ...ctx.request.body };
+    options.uri = `${API_VERSION}/convert/sql2SQL?sql=${encodeURIComponent(
+        params.sql,
+    )}&experimental=true&raster=${ctx.request.body.dataset.type === 'raster'}`;
+    logger.debug(`Checking sql correct: ${params.sql}`);
 
-        if (params.geostore) {
-            options.uri += `&geostore=${params.geostore}`;
-        }
-        if (params.geojson) {
-            options.body = {
-                geojson: params.geojson,
-            };
-            options.method = 'POST';
-        }
-    } else {
-        logger.debug('Obtaining sql from featureService');
-        const fs: Record<string, any> = { ...ctx.request.body };
-        delete fs.dataset;
-        const query: string = serializeObjToQuery(ctx.request.query);
-        const body: Record<string, any> = fs;
-
-        if (query) {
-            options.uri = `/convert/fs2SQL${query}&tableName=data`;
-        } else {
-            options.uri = '/convert/fs2SQL?tableName=data';
-        }
-        options.body = body;
+    if (params.geostore) {
+        options.uri += `&geostore=${params.geostore}`;
+    }
+    if (params.geojson) {
+        options.body = {
+            geojson: params.geojson,
+        };
         options.method = 'POST';
     }
 
