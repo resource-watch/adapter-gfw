@@ -79,10 +79,10 @@ describe('Query tests - POST HTTP verb', () => {
 
     it('Send query should return result(happy case)', async () => {
         const timestamp: string = String(new Date().getTime());
-        const sql: string = 'select * from data limit 2';
+        const sql: string = 'SELECT * from DATA LIMIT 2';
 
         createMockGetDataset(timestamp);
-        // createMockSQLQuery(sql);
+        createMockSQLQuery(sql, false, undefined, 'POST');
         createMockConvertSQL(sql);
 
         const response: Record<string, any> = await requester

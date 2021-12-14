@@ -82,7 +82,7 @@ describe('Query tests - GET HTTP verb', () => {
         const sql: string = 'SELECT * from DATA LIMIT 2';
 
         createMockGetDataset(timestamp);
-        createMockSQLQuery(sql);
+        createMockSQLQuery(sql, false, undefined, 'GET');
         createMockConvertSQL(sql);
 
         const response: Record<string, any> = await requester

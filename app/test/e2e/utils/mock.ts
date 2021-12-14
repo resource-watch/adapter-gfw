@@ -1,3 +1,4 @@
+import { Method } from 'axios';
 import nock from 'nock';
 
 import { DEFAULT_RESPONSE_SQL_QUERY, DATASET_ATTRS } from './test.constants';
@@ -26,11 +27,29 @@ export const createMockConvertSQL: (sqlQuery: string) => void = (
             },
         });
 
-export const createMockSQLQuery: (sql: string) => void = (sql: string) => {
+export const createMockSQLQuery: (
+    sql: string,
+    download: boolean,
+    format: string,
+    method: Method
+) => void = (sql: string, download: boolean, format, method: Method) => {
     const encodedSql: string = encodeURIComponent(sql);
+    let pathPart: string = '';
+    let response: Record<'data' | 'status', any> | String;
+    if (download) {
+        pathPart = `download/${format}`;
+        response = 'some data "iso","adm1"';
+    } else {
+        pathPart = 'query';
+        response = DEFAULT_RESPONSE_SQL_QUERY;
+    }
+
+    if (method === 'GET') {
+        pathPart = `${pathPart}?sql=${encodedSql}`;
+    }
     nock('https://data-api.globalforestwatch.org')
-        .get(`/dataset/nasa_viirs_fire_alerts/latest/query?sql=${encodedSql}`)
-        .reply(200, DEFAULT_RESPONSE_SQL_QUERY);
+        .intercept(`/dataset/nasa_viirs_fire_alerts/latest/${pathPart}`, method)
+        .reply(200, response);
 };
 
 export const createMockRegisterDataset: (id: string) => void = (id) =>

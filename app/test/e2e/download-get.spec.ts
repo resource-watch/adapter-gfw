@@ -78,10 +78,10 @@ describe('Query download tests - GET HTTP verb', () => {
 
     it('Download should return result with format csv (happy case)', async () => {
         const timestamp: string = String(new Date().getTime());
-        const sql: string = 'select * from data limit 2';
+        const sql: string = 'SELECT * from DATA LIMIT 2';
 
         createMockGetDataset(timestamp);
-        // createMockSQLQuery(sql);
+        createMockSQLQuery(sql, true, 'csv', 'GET');
         createMockConvertSQL(sql);
 
         const response: Record<string, any> = await requester
