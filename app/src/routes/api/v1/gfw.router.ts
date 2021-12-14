@@ -1,3 +1,4 @@
+import { Method } from 'axios';
 import { Context, Next } from 'koa';
 import Router from 'koa-router';
 import {
@@ -81,6 +82,9 @@ class GfwRouter {
         const queryResults: Record<string, any> = await GfwService.executeQuery(
             ctx.request.body.dataset.connectorUrl,
             ctx.query.sql as string,
+            ctx.request.method as Method,
+            false,
+            undefined,
             ctx.query.geostore_origin as string,
             ctx.query.geostore_id as string,
             cloneUrl,
@@ -104,12 +108,14 @@ class GfwRouter {
                     mimetype = 'application/json';
                     break;
             }
-            const queryResults: Record<string, any> = await GfwService.download(
+            const queryResults: Record<string, any> = await GfwService.executeQuery(
                 ctx.request.body.dataset.connectorUrl,
                 ctx.query.sql as string,
+                ctx.request.method as Method,
+                true,
+                format,
                 ctx.query.geostore_origin as string,
                 ctx.query.geostore_id as string,
-                format,
             );
             ctx.body = queryResults;
             ctx.set(
