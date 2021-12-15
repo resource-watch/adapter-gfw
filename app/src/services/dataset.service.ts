@@ -1,10 +1,7 @@
 import { RWAPIMicroservice } from 'rw-api-microservice-node';
 import logger from 'logger';
 
-// @ts-ignore
-import DatasetNotFound from 'errors/datasetNotFound.error';
-
-const API_VERSION: string = 'v1';
+import { DatasetNotFound } from 'errors/datasetNotFound.error';
 
 class DatasetService {
     static async getDatasetById(datasetId: string): Promise<Record<string, any>> {
@@ -14,11 +11,11 @@ class DatasetService {
 
         try {
             const dataset: Record<string, any> =
-        await RWAPIMicroservice.requestToMicroservice({
-            uri: `/${API_VERSION}/dataset/${datasetId}`,
-            method: 'GET',
-            json: true,
-        });
+                await RWAPIMicroservice.requestToMicroservice({
+                    uri: `/v1/dataset/${datasetId}`,
+                    method: 'GET',
+                    json: true,
+                });
             return dataset.data;
         } catch (err) {
             if (err.statusCode === 404) {

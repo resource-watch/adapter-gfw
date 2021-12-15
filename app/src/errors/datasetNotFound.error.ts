@@ -1,4 +1,4 @@
-class DatasetNotFound extends Error {
+export class DatasetNotFound extends Error {
     status: number;
 
     constructor(message: string) {
@@ -8,5 +8,3 @@ class DatasetNotFound extends Error {
         this.status = 404;
     }
 }
-
-module.exports = DatasetNotFound;

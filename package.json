@@ -41,6 +41,7 @@
     "@types/config": "^0.0.37",
     "@types/koa": "^2.11.6",
     "@types/koa-logger": "^3.1.1",
+    "@types/koa__cors": "^3.1.0",
     "@types/mocha": "^9.0.0",
     "@types/request": "^2.48.7",
     "@types/sleep": "^0.0.8",
