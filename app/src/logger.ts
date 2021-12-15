@@ -12,7 +12,6 @@ const streams: Record<string, unknown>[] = [
     },
 ];
 
-
 if (config.get('logger.toFile')) {
     streams.push({
         level: config.get('logger.level') || 'debug',

@@ -16,8 +16,8 @@ interface IInit {
     app: Koa;
 }
 
-const init: () => Promise<IInit> = async (): Promise<IInit> => {
-    return new Promise((resolve) => {
+const init: () => Promise<IInit> = async (): Promise<IInit> =>
+    new Promise((resolve) => {
         const app: Koa = new Koa();
 
         app.use(
@@ -26,7 +26,7 @@ const init: () => Promise<IInit> = async (): Promise<IInit> => {
                 jsonLimit: '50mb',
                 formLimit: '50mb',
                 textLimit: '50mb',
-            }),
+            })
         );
         app.use(koaSimpleHealthCheck());
 
@@ -35,7 +35,7 @@ const init: () => Promise<IInit> = async (): Promise<IInit> => {
         app.use(
             async (
                 ctx: { status: number; response: { type: string }; body: any },
-                next: () => any,
+                next: () => any
             ) => {
                 try {
                     await next();
@@ -52,7 +52,7 @@ const init: () => Promise<IInit> = async (): Promise<IInit> => {
                         ctx.response.type = 'application/vnd.api+json';
                         ctx.body = ErrorSerializer.serializeError(
                             ctx.status,
-                            'Unexpected error',
+                            'Unexpected error'
                         );
                         return;
                     }
@@ -60,10 +60,10 @@ const init: () => Promise<IInit> = async (): Promise<IInit> => {
                     ctx.response.type = 'application/vnd.api+json';
                     ctx.body = ErrorSerializer.serializeError(
                         ctx.status,
-                        error.message,
+                        error.message
                     );
                 }
-            },
+            }
         );
 
         app.use(
@@ -78,7 +78,7 @@ const init: () => Promise<IInit> = async (): Promise<IInit> => {
                     | 'false',
                 fastlyServiceId: process.env.FASTLY_SERVICEID,
                 fastlyAPIKey: process.env.FASTLY_APIKEY,
-            }),
+            })
         );
         app.use(koaLogger());
 
@@ -91,6 +91,5 @@ const init: () => Promise<IInit> = async (): Promise<IInit> => {
         logger.info('Server started in ', port);
         resolve({ app, server });
     });
-};
 
-export { init };
+export default init;

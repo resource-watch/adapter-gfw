@@ -6,7 +6,7 @@ module.exports = {
     project: ["./tsconfig.json"],
   },
   plugins: ["@typescript-eslint", "mocha"],
-  extends: ["airbnb-typescript"],
+  extends: ["airbnb-base", "airbnb-typescript/base"],
   globals: {
     describe: true,
     it: true,

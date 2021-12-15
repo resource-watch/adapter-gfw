@@ -20,7 +20,7 @@ describe('Query tests - GET HTTP verb', () => {
 
         if (process.env.NODE_ENV !== 'test') {
             throw Error(
-                `Running the test suite with NODE_ENV ${process.env.NODE_ENV} may result in permanent data loss. Please use NODE_ENV=test.`,
+                `Running the test suite with NODE_ENV ${process.env.NODE_ENV} may result in permanent data loss. Please use NODE_ENV=test.`
             );
         }
 
@@ -36,14 +36,16 @@ describe('Query tests - GET HTTP verb', () => {
         const query: string = `select * from ${timestamp}`;
         const response: Record<string, any> = await requester
             .get(
-                `/api/v1/gfw/query/${timestamp}?sql=${encodeURI(query)}&geostore_id=`,
+                `/api/v1/gfw/query/${timestamp}?sql=${encodeURI(
+                    query
+                )}&geostore_id=`
             )
             .send(requestBody);
 
         ensureCorrectError(
             response,
             "This operation is only supported for datasets with connectorType 'rest'",
-            422,
+            422
         );
     });
 
@@ -61,27 +63,27 @@ describe('Query tests - GET HTTP verb', () => {
         ensureCorrectError(
             response,
             "This operation is only supported for datasets with provider 'gfw'",
-            422,
+            422
         );
     });
 
-    it('Query without sql or fs parameter should return bad request', async () => {
+    it('Query without sql parameter should return bad request', async () => {
         const timestamp: string = String(new Date().getTime());
 
-        createMockGetDataset(timestamp);
+        createMockGetDataset(timestamp, undefined);
 
         const response: Record<string, any> = await requester
             .get(`/api/v1/gfw/query/${timestamp}`)
             .send();
 
-        ensureCorrectError(response, 'sql or fs required', 400);
+        ensureCorrectError(response, 'sql required', 400);
     });
 
     it('Send query should return result(happy case)', async () => {
         const timestamp: string = String(new Date().getTime());
         const sql: string = 'SELECT * from DATA LIMIT 2';
 
-        createMockGetDataset(timestamp);
+        createMockGetDataset(timestamp, undefined);
         createMockSQLQuery(sql, false, undefined, 'GET');
         createMockConvertSQL(sql);
 
@@ -109,14 +111,14 @@ describe('Query tests - GET HTTP verb', () => {
         const { datasetUrl, application } = body.dataset;
         application.should.deep.equal(['your', 'apps']);
         datasetUrl.should.equal(
-            `/query/${timestamp}?sql=${encodeURI(sql).replace('*', '%2A')}`,
+            `/query/${timestamp}?sql=${encodeURI(sql).replace('*', '%2A')}`
         );
     });
 
     afterEach(() => {
         if (!nock.isDone()) {
             throw new Error(
-                `Not all nock interceptors were used: ${nock.pendingMocks()}`,
+                `Not all nock interceptors were used: ${nock.pendingMocks()}`
             );
         }
     });

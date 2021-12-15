@@ -5,27 +5,26 @@ import { DEFAULT_RESPONSE_SQL_QUERY, DATASET_ATTRS } from './test.constants';
 
 export const createMockConvertSQL: (sqlQuery: string) => void = (
     sqlQuery: string,
-) =>
-    nock(process.env.GATEWAY_URL, { encodedQueryParams: true })
-        .get(
-            `/v1/convert/sql2SQL?sql=${encodeURIComponent(
-                sqlQuery,
-            )}&experimental=true&raster=false`,
-        )
-        .reply(200, {
-            data: {
-                type: 'result',
-                id: 'undefined',
-                attributes: {
-                    query: 'SELECT * from DATA LIMIT 2',
-                    jsonSql: {
-                        select: [{ value: '*', alias: null, type: 'literal' }],
-                        from: 'data',
-                    },
+) => nock(process.env.GATEWAY_URL, { encodedQueryParams: true })
+    .get(
+        `/v1/convert/sql2SQL?sql=${encodeURIComponent(
+            sqlQuery,
+        )}&experimental=true&raster=false`,
+    )
+    .reply(200, {
+        data: {
+            type: 'result',
+            id: 'undefined',
+            attributes: {
+                query: 'SELECT * from DATA LIMIT 2',
+                jsonSql: {
+                    select: [{ value: '*', alias: null, type: 'literal' }],
+                    from: 'data',
                 },
-                relationships: {},
             },
-        });
+            relationships: {},
+        },
+    });
 
 export const createMockSQLQuery: (
     sql: string,
@@ -52,8 +51,7 @@ export const createMockSQLQuery: (
         .reply(200, response);
 };
 
-export const createMockRegisterDataset: (id: string) => void = (id) =>
-    nock(process.env.GATEWAY_URL).patch(`/v1/dataset/${id}`).reply(200, {});
+export const createMockRegisterDataset: (id: string) => void = (id) => nock(process.env.GATEWAY_URL).patch(`/v1/dataset/${id}`).reply(200, {});
 
 export const createMockGetDataset: (
     id: string,

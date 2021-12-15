@@ -16,7 +16,7 @@ describe('GET fields', () => {
 
         if (process.env.NODE_ENV !== 'test') {
             throw Error(
-                `Running the test suite with NODE_ENV ${process.env.NODE_ENV} may result in permanent data loss. Please use NODE_ENV=test.`,
+                `Running the test suite with NODE_ENV ${process.env.NODE_ENV} may result in permanent data loss. Please use NODE_ENV=test.`
             );
         }
 
@@ -37,7 +37,7 @@ describe('GET fields', () => {
         ensureCorrectError(
             response,
             "This operation is only supported for datasets with connectorType 'rest'",
-            422,
+            422
         );
     });
 
@@ -55,14 +55,17 @@ describe('GET fields', () => {
         ensureCorrectError(
             response,
             "This operation is only supported for datasets with provider 'gfw'",
-            422,
+            422
         );
     });
 
     it('Get fields correctly for a gfw dataset should return the field list (happy case)', async () => {
         const timestamp: string = String(new Date().getTime());
 
-        const dataset: Record<string, any> = createMockGetDataset(timestamp);
+        const dataset: Record<string, any> = createMockGetDataset(
+            timestamp,
+            undefined
+        );
 
         nock('https://data-api.globalforestwatch.org')
             .get('/dataset/nasa_viirs_fire_alerts/latest/fields')
@@ -82,7 +85,7 @@ describe('GET fields', () => {
     afterEach(() => {
         if (!nock.isDone()) {
             throw new Error(
-                `Not all nock interceptors were used: ${nock.pendingMocks()}`,
+                `Not all nock interceptors were used: ${nock.pendingMocks()}`
             );
         }
     });

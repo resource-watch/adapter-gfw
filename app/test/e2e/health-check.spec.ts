@@ -1,8 +1,8 @@
 import chai from 'chai';
 import nock from 'nock';
 
-import { getTestAgent } from './utils/test-server';
 import request from 'superagent';
+import { getTestAgent } from './utils/test-server';
 
 let requester:ChaiHttp.Agent;
 

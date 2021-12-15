@@ -2,7 +2,7 @@ import nock from 'nock';
 import chai from 'chai';
 
 import { getTestAgent } from './utils/test-server';
-import { createMockRegisterDataset, createMockSQLQuery } from './utils/mock';
+import { createMockRegisterDataset } from './utils/mock';
 import { DATASET } from './utils/test.constants';
 
 let requester: ChaiHttp.Agent;

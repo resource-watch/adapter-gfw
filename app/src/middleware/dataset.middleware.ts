@@ -4,7 +4,6 @@ import logger from 'logger';
 import DatasetService from 'services/dataset.service';
 
 class DatasetMiddleware {
-
     static async getDatasetById(ctx: Context, next: Next): Promise<void> {
         const datasetId: string = ctx.params.dataset;
         logger.debug('[DatasetRouter - getDatasetById] - Dataset id', datasetId);
@@ -34,7 +33,6 @@ class DatasetMiddleware {
 
         await next();
     }
-
 }
 
 export default DatasetMiddleware;

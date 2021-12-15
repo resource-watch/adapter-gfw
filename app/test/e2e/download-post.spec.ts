@@ -1,6 +1,7 @@
 import nock from 'nock';
 import chai from 'chai';
 
+import logger from 'logger';
 import { getTestAgent } from './utils/test-server';
 import {
     createMockGetDataset,
@@ -8,7 +9,6 @@ import {
     createMockSQLQuery,
 } from './utils/mock';
 import { ensureCorrectError } from './utils/helpers';
-import logger from 'logger';
 
 let requester: ChaiHttp.Agent;
 
@@ -20,7 +20,7 @@ describe('Query download tests - POST HTTP verb', () => {
 
         if (process.env.NODE_ENV !== 'test') {
             throw Error(
-                `Running the test suite with NODE_ENV ${process.env.NODE_ENV} may result in permanent data loss. Please use NODE_ENV=test.`,
+                `Running the test suite with NODE_ENV ${process.env.NODE_ENV} may result in permanent data loss. Please use NODE_ENV=test.`
             );
         }
 
@@ -36,14 +36,16 @@ describe('Query download tests - POST HTTP verb', () => {
         const query: string = `select * from ${timestamp}`;
         const response: Record<string, any> = await requester
             .post(
-                `/api/v1/gfw/download/${timestamp}?sql=${encodeURI(query)}&geostore_id=`,
+                `/api/v1/gfw/download/${timestamp}?sql=${encodeURI(
+                    query
+                )}&geostore_id=`
             )
             .send(requestBody);
 
         ensureCorrectError(
             response,
             "This operation is only supported for datasets with connectorType 'rest'",
-            422,
+            422
         );
     });
 
@@ -61,27 +63,27 @@ describe('Query download tests - POST HTTP verb', () => {
         ensureCorrectError(
             response,
             "This operation is only supported for datasets with provider 'gfw'",
-            422,
+            422
         );
     });
 
-    it('Download without sql or fs parameter should return bad request', async () => {
+    it('Download without sql parameter should return bad request', async () => {
         const timestamp: string = String(new Date().getTime());
 
-        createMockGetDataset(timestamp);
+        createMockGetDataset(timestamp, undefined);
 
         const response: Record<string, any> = await requester
             .post(`/api/v1/gfw/download/${timestamp}`)
             .send();
 
-        ensureCorrectError(response, 'sql or fs required', 400);
+        ensureCorrectError(response, 'sql required', 400);
     });
 
     it('Download should return result with format csv (happy case)', async () => {
         const timestamp: string = String(new Date().getTime());
         const sql: string = 'SELECT * from DATA LIMIT 2';
 
-        createMockGetDataset(timestamp);
+        createMockGetDataset(timestamp, undefined);
         createMockSQLQuery(sql, true, 'csv', 'POST');
         createMockConvertSQL(sql);
 
@@ -93,7 +95,7 @@ describe('Query download tests - POST HTTP verb', () => {
         response.status.should.equal(200);
         response.headers['content-type'].should.equal('text/csv');
         response.headers['content-disposition'].should.equal(
-            `attachment; filename=${timestamp}.csv`,
+            `attachment; filename=${timestamp}.csv`
         );
         logger.debug('text', response.text);
         response.text.should.contains('"iso","adm1"');
@@ -102,7 +104,7 @@ describe('Query download tests - POST HTTP verb', () => {
     afterEach(() => {
         if (!nock.isDone()) {
             throw new Error(
-                `Not all nock interceptors were used: ${nock.pendingMocks()}`,
+                `Not all nock interceptors were used: ${nock.pendingMocks()}`
             );
         }
     });

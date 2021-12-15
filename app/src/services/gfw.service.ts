@@ -10,7 +10,6 @@ class GfwService {
             const result: Record<string, any> = await axios.get(reqUrl);
             return result.data;
         } catch (err) {
-            logger.error('Error obtaining fields', err);
             throw new Error('Error obtaining fields');
         }
     }
@@ -38,7 +37,7 @@ class GfwService {
             reqUrl = `${reqUrl}?sql=${sqlQuery}`;
         }
 
-        let requestConfig: Record<string, any> = {
+        const requestConfig: Record<string, any> = {
             url: reqUrl,
             method,
         };
@@ -65,13 +64,12 @@ class GfwService {
                     requestConfig,
                 );
                 return result.data;
-            } else {
-                const result: Record<string, any> = await axios.request(
-                    requestConfig,
-                );
-                logger.debug('QUERY RESULT', result.data);
-                return { data: result.data.data, meta: { cloneUrl } };
             }
+            const result: Record<string, any> = await axios.request(
+                requestConfig,
+            );
+            logger.debug('QUERY RESULT', result.data);
+            return { data: result.data.data, meta: { cloneUrl } };
         } catch (err) {
             logger.error('Error obtaining query', err);
             throw new Error('Error obtaining query results');
