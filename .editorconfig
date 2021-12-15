@@ -12,6 +12,7 @@ insert_final_newline = true
 # Set default charset
 [*.ts]
 charset = utf-8
+quote_type = single
 
 # 2 space indentation
 [**/*.ts]
