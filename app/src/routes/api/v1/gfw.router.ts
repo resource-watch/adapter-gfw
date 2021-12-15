@@ -12,11 +12,10 @@ import logger from 'logger';
 import DatasetMiddleware from 'middleware/dataset.middleware';
 import GfwService from 'services/gfw.service';
 import ErrorSerializer from 'serializers/errorSerializer';
-
-const API_VERSION: string = 'v1';
+import { MicroserviceConnectionError } from 'errors/microserviceConnection.error';
 
 const router: Router = new Router({
-    prefix: `/api/${API_VERSION}/gfw`,
+    prefix: '/api/v1/gfw',
 });
 
 class GfwRouter {
@@ -26,9 +25,7 @@ class GfwRouter {
             url: `/dataset/${idDataset}/clone`,
             body: {
                 dataset: {
-                    datasetUrl: url
-                        .replace('/gfw', '')
-                        .replace(`/api/${API_VERSION}`, ''),
+                    datasetUrl: url.replace('/gfw', '').replace('/api/v1', ''),
                     application: ['your', 'apps'],
                 },
             },
@@ -41,7 +38,7 @@ class GfwRouter {
             await GfwService.getFields(ctx.request.body.connector.connectorUrl);
             await RWAPIMicroservice.requestToMicroservice({
                 method: 'PATCH',
-                uri: `/${API_VERSION}/dataset/${ctx.request.body.connector.id}`,
+                uri: `/v1/dataset/${ctx.request.body.connector.id}`,
                 body: {
                     dataset: {
                         status: 1,
@@ -50,17 +47,24 @@ class GfwRouter {
                 json: true,
             });
         } catch (e) {
-            await RWAPIMicroservice.requestToMicroservice({
-                method: 'PATCH',
-                uri: `/${API_VERSION}/dataset/${ctx.request.body.connector.id}`,
-                body: {
-                    dataset: {
-                        status: 2,
-                        errorMessage: `${e.name} - ${e.message}`,
+            try {
+                await RWAPIMicroservice.requestToMicroservice({
+                    method: 'PATCH',
+                    uri: `/v1/dataset/${ctx.request.body.connector.id}`,
+                    body: {
+                        dataset: {
+                            status: 2,
+                            errorMessage: `${e.name} - ${e.message}`,
+                        },
                     },
-                },
-                json: true,
-            });
+                    json: true,
+                });
+            } catch (err) {
+                logger.error('Error updating dataset');
+                throw new MicroserviceConnectionError(
+                    `Error updating dataset: ${err.message}`,
+                );
+            }
         }
         ctx.body = {};
     }
@@ -150,7 +154,7 @@ const toSQLMiddleware: (ctx: Context, next: Next) => Promise<void> = async (
     }
 
     const params: Record<string, any> = { ...ctx.query, ...ctx.request.body };
-    options.uri = `${API_VERSION}/convert/sql2SQL?sql=${encodeURIComponent(
+    options.uri = `/v1/convert/sql2SQL?sql=${encodeURIComponent(
         params.sql,
     )}&experimental=true&raster=${ctx.request.body.dataset.type === 'raster'}`;
     logger.debug(`Checking sql correct: ${params.sql}`);
