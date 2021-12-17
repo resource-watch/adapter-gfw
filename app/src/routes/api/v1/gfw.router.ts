@@ -11,7 +11,7 @@ import FieldSerializer from 'serializers/field.serializer';
 import logger from 'logger';
 import DatasetMiddleware from 'middleware/dataset.middleware';
 import GfwService from 'services/gfw.service';
-import ErrorSerializer from 'serializers/errorSerializer';
+import ErrorSerializer from 'serializers/error.serializer';
 import { MicroserviceConnectionError } from 'errors/microserviceConnection.error';
 
 const router: Router = new Router({
@@ -62,7 +62,7 @@ class GfwRouter {
             } catch (err) {
                 logger.error('Error updating dataset');
                 throw new MicroserviceConnectionError(
-                    `Error updating dataset: ${err.message}`
+                    `Error updating dataset: ${err.message}`,
                 );
             }
         }
@@ -72,7 +72,7 @@ class GfwRouter {
     static async fields(ctx: Context): Promise<void> {
         logger.info('Obtaining fields');
         const fields: Record<string, any> = await GfwService.getFields(
-            ctx.request.body.dataset.connectorUrl
+            ctx.request.body.dataset.connectorUrl,
         );
         ctx.body = FieldSerializer.serialize(fields.data);
     }
@@ -80,7 +80,7 @@ class GfwRouter {
     static async query(ctx: Context): Promise<void> {
         const cloneUrl: Record<string, any> = GfwRouter.getCloneUrl(
             ctx.request.url,
-            ctx.params.dataset
+            ctx.params.dataset,
         );
         logger.info('Executing query');
         const queryResults: Record<string, any> = await GfwService.executeQuery(
@@ -91,7 +91,7 @@ class GfwRouter {
             undefined,
             ctx.query.geostore_origin as string,
             ctx.query.geostore_id as string,
-            cloneUrl
+            cloneUrl,
         );
         ctx.body = queryResults;
     }
@@ -112,26 +112,25 @@ class GfwRouter {
                     mimetype = 'application/json';
                     break;
             }
-            const queryResults: Record<string, any> =
-                await GfwService.executeQuery(
-                    ctx.request.body.dataset.connectorUrl,
-                    ctx.query.sql as string,
-                    ctx.request.method as Method,
-                    true,
-                    format,
-                    ctx.query.geostore_origin as string,
-                    ctx.query.geostore_id as string
-                );
+            const queryResults: Record<string, any> = await GfwService.executeQuery(
+                ctx.request.body.dataset.connectorUrl,
+                ctx.query.sql as string,
+                ctx.request.method as Method,
+                true,
+                format,
+                ctx.query.geostore_origin as string,
+                ctx.query.geostore_id as string,
+            );
             ctx.body = queryResults;
             ctx.set(
                 'Content-disposition',
-                `attachment; filename=${ctx.request.body.dataset.id}.${format}`
+                `attachment; filename=${ctx.request.body.dataset.id}.${format}`,
             );
             ctx.set('Content-type', mimetype);
         } catch (err) {
             ctx.body = ErrorSerializer.serializeError(
                 err.statusCode || 500,
-                err.error && err.error.error ? err.error.error[0] : err.message
+                err.error && err.error.error ? err.error.error[0] : err.message,
             );
             ctx.status = 500;
         }
@@ -140,7 +139,7 @@ class GfwRouter {
 
 const toSQLMiddleware: (ctx: Context, next: Next) => Promise<void> = async (
     ctx: Context,
-    next: Next
+    next: Next,
 ) => {
     const options: RequestToMicroserviceOptions & request.OptionsWithUri = {
         method: 'GET',
@@ -156,7 +155,7 @@ const toSQLMiddleware: (ctx: Context, next: Next) => Promise<void> = async (
 
     const params: Record<string, any> = { ...ctx.query, ...ctx.request.body };
     options.uri = `/v1/convert/sql2SQL?sql=${encodeURIComponent(
-        params.sql
+        params.sql,
     )}&experimental=true&raster=${ctx.request.body.dataset.type === 'raster'}`;
     logger.debug(`Checking sql correct: ${params.sql}`);
 
@@ -171,8 +170,7 @@ const toSQLMiddleware: (ctx: Context, next: Next) => Promise<void> = async (
     }
 
     try {
-        const result: Record<string, any> =
-            await RWAPIMicroservice.requestToMicroservice(options);
+        const result: Record<string, any> = await RWAPIMicroservice.requestToMicroservice(options);
         logger.debug('result', result.statusCode);
         if (result.statusCode === 204 || result.statusCode === 200) {
             ctx.query.sql = result.body.data.attributes.query;
@@ -186,10 +184,10 @@ const toSQLMiddleware: (ctx: Context, next: Next) => Promise<void> = async (
         }
     } catch (e) {
         if (
-            e.errors &&
-            e.errors.length > 0 &&
-            e.errors[0].status >= 400 &&
-            e.errors[0].status < 500
+            e.errors
+            && e.errors.length > 0
+            && e.errors[0].status >= 400
+            && e.errors[0].status < 500
         ) {
             ctx.status = e.errors[0].status;
             ctx.body = e;
@@ -202,32 +200,32 @@ const toSQLMiddleware: (ctx: Context, next: Next) => Promise<void> = async (
 router.get(
     '/fields/:dataset',
     DatasetMiddleware.getDatasetById,
-    GfwRouter.fields
+    GfwRouter.fields,
 );
 router.post('/rest-datasets/gfw', GfwRouter.registerDataset);
 router.get(
     '/query/:dataset',
     DatasetMiddleware.getDatasetById,
     toSQLMiddleware,
-    GfwRouter.query
+    GfwRouter.query,
 );
 router.post(
     '/query/:dataset',
     DatasetMiddleware.getDatasetById,
     toSQLMiddleware,
-    GfwRouter.query
+    GfwRouter.query,
 );
 router.get(
     '/download/:dataset',
     DatasetMiddleware.getDatasetById,
     toSQLMiddleware,
-    GfwRouter.download
+    GfwRouter.download,
 );
 router.post(
     '/download/:dataset',
     DatasetMiddleware.getDatasetById,
     toSQLMiddleware,
-    GfwRouter.download
+    GfwRouter.download,
 );
 
 export default router;
