@@ -4,6 +4,7 @@ import koaBody from 'koa-body';
 import koaLogger from 'koa-logger';
 import { RWAPIMicroservice } from 'rw-api-microservice-node';
 import cors from '@koa/cors';
+// @ts-ignore
 import koaSimpleHealthCheck from 'koa-simple-healthcheck';
 
 import logger from 'logger';
