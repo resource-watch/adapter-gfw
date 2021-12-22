@@ -1,4 +1,4 @@
-import axios, { Method } from 'axios';
+import axios from 'axios';
 
 import logger from 'logger';
 
@@ -17,15 +17,14 @@ class GfwService {
     static async executeQuery(
         urlDataset: string,
         sqlQuery: string,
-        method: Method,
         download: boolean,
         format: string,
+        geometry: Record<string, any>,
         geostoreOrigin: string,
         geostoreId: string,
         cloneUrl?: Record<string, any>,
     ): Promise<Record<string, any>> {
         let reqUrl: string = `${urlDataset}`;
-        let data: Record<string, any> = {};
 
         if (download) {
             reqUrl = `${reqUrl}/download/${format}`;
@@ -33,29 +32,27 @@ class GfwService {
             reqUrl = `${reqUrl}/query`;
         }
 
-        if (method === 'GET') {
+        let requestConfig: Record<string, any>;
+        if (geometry) {
+            requestConfig = {
+                url: reqUrl,
+                method: 'POST',
+                data: { sql: sqlQuery, geometry },
+            };
+        } else {
             reqUrl = `${reqUrl}?sql=${sqlQuery}`;
-        }
-
-        const requestConfig: Record<string, any> = {
-            url: reqUrl,
-            method,
-        };
-
-        if (method === 'POST') {
-            data = { sql: sqlQuery };
-            requestConfig.data = data;
-        }
-
-        if (geostoreId) {
-            reqUrl = `${reqUrl}&geostore_id=${geostoreId}`;
-
+            if (geostoreId) reqUrl = `${reqUrl}&geostore_id=${geostoreId}`;
             if (geostoreOrigin) {
                 reqUrl = `${reqUrl}&geostore_origin=${geostoreOrigin}`;
             }
+
+            requestConfig = {
+                url: reqUrl,
+                method: 'GET',
+            };
         }
+
         logger.debug(`Sending query request to ${reqUrl}`);
-        delete data.dataset;
 
         try {
             if (download) {

@@ -20,7 +20,7 @@ describe('Query download tests - POST HTTP verb', () => {
 
         if (process.env.NODE_ENV !== 'test') {
             throw Error(
-                `Running the test suite with NODE_ENV ${process.env.NODE_ENV} may result in permanent data loss. Please use NODE_ENV=test.`
+                `Running the test suite with NODE_ENV ${process.env.NODE_ENV} may result in permanent data loss. Please use NODE_ENV=test.`,
             );
         }
 
@@ -37,15 +37,15 @@ describe('Query download tests - POST HTTP verb', () => {
         const response: Record<string, any> = await requester
             .post(
                 `/api/v1/gfw/download/${timestamp}?sql=${encodeURI(
-                    query
-                )}&geostore_id=`
+                    query,
+                )}&geostore_id=`,
             )
             .send(requestBody);
 
         ensureCorrectError(
             response,
             "This operation is only supported for datasets with connectorType 'rest'",
-            422
+            422,
         );
     });
 
@@ -63,7 +63,7 @@ describe('Query download tests - POST HTTP verb', () => {
         ensureCorrectError(
             response,
             "This operation is only supported for datasets with provider 'gfw'",
-            422
+            422,
         );
     });
 
@@ -89,13 +89,25 @@ describe('Query download tests - POST HTTP verb', () => {
 
         const response: Record<string, any> = await requester
             .post(`/api/v1/gfw/download/${timestamp}`)
-            .query({ sql, format: 'csv' })
-            .send();
+            .query({ format: 'csv' })
+            .send({
+                sql,
+                geometry: {
+                    type: 'Polygon',
+                    coordinates: [
+                        [100.0, 0.0],
+                        [101.0, 0.0],
+                        [101.0, 1.0],
+                        [100.0, 1.0],
+                        [100.0, 0.0],
+                    ],
+                },
+            });
 
         response.status.should.equal(200);
         response.headers['content-type'].should.equal('text/csv');
         response.headers['content-disposition'].should.equal(
-            `attachment; filename=${timestamp}.csv`
+            `attachment; filename=${timestamp}.csv`,
         );
         logger.debug('text', response.text);
         response.text.should.contains('"iso","adm1"');
@@ -104,7 +116,7 @@ describe('Query download tests - POST HTTP verb', () => {
     afterEach(() => {
         if (!nock.isDone()) {
             throw new Error(
-                `Not all nock interceptors were used: ${nock.pendingMocks()}`
+                `Not all nock interceptors were used: ${nock.pendingMocks()}`,
             );
         }
     });

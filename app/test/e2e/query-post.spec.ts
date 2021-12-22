@@ -20,7 +20,7 @@ describe('Query tests - POST HTTP verb', () => {
 
         if (process.env.NODE_ENV !== 'test') {
             throw Error(
-                `Running the test suite with NODE_ENV ${process.env.NODE_ENV} may result in permanent data loss. Please use NODE_ENV=test.`
+                `Running the test suite with NODE_ENV ${process.env.NODE_ENV} may result in permanent data loss. Please use NODE_ENV=test.`,
             );
         }
 
@@ -37,15 +37,15 @@ describe('Query tests - POST HTTP verb', () => {
         const response: Record<string, any> = await requester
             .post(
                 `/api/v1/gfw/query/${timestamp}?sql=${encodeURI(
-                    query
-                )}&geostore_id=`
+                    query,
+                )}&geostore_id=`,
             )
             .send(requestBody);
 
         ensureCorrectError(
             response,
             "This operation is only supported for datasets with connectorType 'rest'",
-            422
+            422,
         );
     });
 
@@ -63,7 +63,7 @@ describe('Query tests - POST HTTP verb', () => {
         ensureCorrectError(
             response,
             "This operation is only supported for datasets with provider 'gfw'",
-            422
+            422,
         );
     });
 
@@ -89,8 +89,19 @@ describe('Query tests - POST HTTP verb', () => {
 
         const response: Record<string, any> = await requester
             .post(`/api/v1/gfw/query/${timestamp}`)
-            .query({ sql })
-            .send();
+            .send({
+                sql,
+                geometry: {
+                    type: 'Polygon',
+                    coordinates: [
+                        [100.0, 0.0],
+                        [101.0, 0.0],
+                        [101.0, 1.0],
+                        [100.0, 1.0],
+                        [100.0, 0.0],
+                    ],
+                },
+            });
 
         response.status.should.equal(200);
         response.body.should.have.property('data').and.instanceOf(Array);
@@ -110,15 +121,13 @@ describe('Query tests - POST HTTP verb', () => {
 
         const { datasetUrl, application } = body.dataset;
         application.should.deep.equal(['your', 'apps']);
-        datasetUrl.should.equal(
-            `/query/${timestamp}?sql=${encodeURI(sql).replace('*', '%2A')}`
-        );
+        datasetUrl.should.equal(`/query/${timestamp}`);
     });
 
     afterEach(() => {
         if (!nock.isDone()) {
             throw new Error(
-                `Not all nock interceptors were used: ${nock.pendingMocks()}`
+                `Not all nock interceptors were used: ${nock.pendingMocks()}`,
             );
         }
     });
