@@ -52,6 +52,9 @@ class GfwService {
             };
         }
 
+        requestConfig.headers = {
+            'x-api-key': process.env.GFW_API_KEY,
+        };
         logger.debug(`Sending query request to ${reqUrl}`);
 
         try {

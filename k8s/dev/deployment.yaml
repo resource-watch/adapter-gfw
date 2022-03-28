@@ -49,6 +49,11 @@ spec:
                 secretKeyRef:
                   key: MICROSERVICE_TOKEN
                   name: mssecrets
+            - name: GFW_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: GFW_API_KEY
+                  name: mssecrets
             - name: FASTLY_ENABLED
               valueFrom:
                 secretKeyRef:
