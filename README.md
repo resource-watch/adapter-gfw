@@ -101,6 +101,7 @@ Follow the instruction above for setting up the runtime environment for Docker e
 - NODE_PATH: path => relative path to the source code. Should be `app/src`.
 - MICROSERVICE_TOKEN: string => Admin role token to use with the authorization microservice.
 - GATEWAY_URL: URL => AWS Gateway URL in cloud deployment. <!--TODO: add localstack when it's functional -->
+- GFW_API_KEY => API key to access GFW DATA API.
 - FASTLY_ENABLED: boolean => Whether to enable Fastly caching.
 
 You can optionally set other variables, see [this file](config/custom-environment-variables.json) for an extended list.
