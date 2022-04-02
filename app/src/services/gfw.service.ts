@@ -55,6 +55,7 @@ class GfwService {
         requestConfig.headers = {
             'x-api-key': process.env.GFW_API_KEY,
         };
+        logger.info('Query request config', requestConfig);
         logger.debug(`Sending query request to ${reqUrl}`);
 
         try {
