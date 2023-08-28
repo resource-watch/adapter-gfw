@@ -2,7 +2,6 @@ import { Context, Next } from 'koa';
 import Router from 'koa-router';
 import {
     RWAPIMicroservice,
-    RequestToMicroserviceOptions,
 } from 'rw-api-microservice-node';
 import type request from 'request';
 
@@ -12,6 +11,7 @@ import DatasetMiddleware from 'middleware/dataset.middleware';
 import GfwService from 'services/gfw.service';
 import ErrorSerializer from 'serializers/error.serializer';
 import { MicroserviceConnectionError } from 'errors/microserviceConnection.error';
+import { RequestToMicroserviceOptions } from "rw-api-microservice-node/dist/types";
 
 const router: Router = new Router({
     prefix: '/api/v1/gfw',
@@ -43,7 +43,9 @@ class GfwRouter {
                         status: 1,
                     },
                 },
-                json: true,
+                headers: {
+                    'x-api-key': ctx.request.headers['x-api-key']
+                }
             });
         } catch (e) {
             try {
@@ -56,7 +58,9 @@ class GfwRouter {
                             errorMessage: `${e.name} - ${e.message}`,
                         },
                     },
-                    json: true,
+                    headers: {
+                        'x-api-key': ctx.request.headers['x-api-key']
+                    }
                 });
             } catch (err) {
                 logger.error('Error updating dataset');
@@ -142,10 +146,12 @@ const toSQLMiddleware: (ctx: Context, next: Next) => Promise<void> = async (
 ) => {
     const options: RequestToMicroserviceOptions & request.OptionsWithUri = {
         method: 'GET',
-        json: true,
         resolveWithFullResponse: true,
         simple: false,
         uri: '',
+        headers: {
+            'x-api-key': ctx.request.headers['x-api-key']
+        }
     };
     if (!ctx.query.sql && !ctx.request.body.sql) {
         ctx.throw(400, 'sql required');

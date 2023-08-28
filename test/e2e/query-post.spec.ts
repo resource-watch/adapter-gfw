@@ -1,20 +1,20 @@
 import nock from 'nock';
 import chai from 'chai';
 
-import logger from 'logger';
-import { getTestAgent } from './utils/test-server';
+import { getTestServer } from './utils/test-server';
 import {
     createMockGetDataset,
     createMockConvertSQL,
     createMockSQLQuery,
 } from './utils/mock';
-import { ensureCorrectError } from './utils/helpers';
+import { ensureCorrectError, mockValidateRequestWithApiKey } from './utils/helpers';
+import { DEFAULT_RESPONSE_SQL_QUERY } from './utils/test.constants';
 
 let requester: ChaiHttp.Agent;
 
 chai.should();
 
-describe('Query download tests - POST HTTP verb', () => {
+describe('Query tests - POST HTTP verb', () => {
     before(async () => {
         nock.cleanAll();
 
@@ -24,10 +24,11 @@ describe('Query download tests - POST HTTP verb', () => {
             );
         }
 
-        requester = await getTestAgent();
+        requester = await getTestServer();
     });
 
-    it('Download from a dataset without connectorType gfw should fail', async () => {
+    it('Query to dataset without connectorType gfw should fail', async () => {
+        mockValidateRequestWithApiKey({})
         const timestamp: string = String(new Date().getTime());
 
         createMockGetDataset(timestamp, { connectorType: 'foo' });
@@ -36,10 +37,11 @@ describe('Query download tests - POST HTTP verb', () => {
         const query: string = `select * from ${timestamp}`;
         const response: Record<string, any> = await requester
             .post(
-                `/api/v1/gfw/download/${timestamp}?sql=${encodeURI(
+                `/api/v1/gfw/query/${timestamp}?sql=${encodeURI(
                     query,
                 )}&geostore_id=`,
             )
+            .set('x-api-key', 'api-key-test')
             .send(requestBody);
 
         ensureCorrectError(
@@ -49,7 +51,8 @@ describe('Query download tests - POST HTTP verb', () => {
         );
     });
 
-    it('Download from a dataset without a supported provider should fail', async () => {
+    it('Query to dataset without a supported provider should fail', async () => {
+        mockValidateRequestWithApiKey({})
         const timestamp: string = String(new Date().getTime());
 
         createMockGetDataset(timestamp, { provider: 'foo' });
@@ -57,7 +60,8 @@ describe('Query download tests - POST HTTP verb', () => {
         const requestBody: Record<string, any> = {};
         const query: string = `select * from ${timestamp}`;
         const response: Record<string, any> = await requester
-            .post(`/api/v1/gfw/download/${timestamp}?sql=${query}`)
+            .post(`/api/v1/gfw/query/${timestamp}?sql=${query}`)
+            .set('x-api-key', 'api-key-test')
             .send(requestBody);
 
         ensureCorrectError(
@@ -67,29 +71,32 @@ describe('Query download tests - POST HTTP verb', () => {
         );
     });
 
-    it('Download without sql parameter should return bad request', async () => {
+    it('Query without sql parameter should return bad request', async () => {
+        mockValidateRequestWithApiKey({})
         const timestamp: string = String(new Date().getTime());
 
         createMockGetDataset(timestamp, undefined);
 
         const response: Record<string, any> = await requester
-            .post(`/api/v1/gfw/download/${timestamp}`)
+            .post(`/api/v1/gfw/query/${timestamp}`)
+            .set('x-api-key', 'api-key-test')
             .send();
 
         ensureCorrectError(response, 'sql required', 400);
     });
 
-    it('Download should return result with format csv (happy case)', async () => {
+    it('Send query should return result(happy case)', async () => {
+        mockValidateRequestWithApiKey({})
         const timestamp: string = String(new Date().getTime());
         const sql: string = 'SELECT * from DATA LIMIT 2';
 
         createMockGetDataset(timestamp, undefined);
-        createMockSQLQuery(sql, true, 'csv', 'POST');
+        createMockSQLQuery(sql, false, undefined, 'POST');
         createMockConvertSQL(sql);
 
         const response: Record<string, any> = await requester
-            .post(`/api/v1/gfw/download/${timestamp}`)
-            .query({ format: 'csv' })
+            .post(`/api/v1/gfw/query/${timestamp}`)
+            .set('x-api-key', 'api-key-test')
             .send({
                 sql,
                 geometry: {
@@ -105,12 +112,24 @@ describe('Query download tests - POST HTTP verb', () => {
             });
 
         response.status.should.equal(200);
-        response.headers['content-type'].should.equal('text/csv');
-        response.headers['content-disposition'].should.equal(
-            `attachment; filename=${timestamp}.csv`,
-        );
-        logger.debug('text', response.text);
-        response.text.should.contains('"iso","adm1"');
+        response.body.should.have.property('data').and.instanceOf(Array);
+        response.body.should.have.property('meta').and.instanceOf(Object);
+
+        const { meta, data } = response.body;
+        data.should.deep.equal(DEFAULT_RESPONSE_SQL_QUERY.data);
+
+        meta.should.have.property('cloneUrl').and.instanceOf(Object);
+        // eslint-disable-next-line camelcase
+        const {
+            cloneUrl: { http_method: httpMethod, url, body },
+        } = meta;
+        httpMethod.should.equal('POST');
+        url.should.equal(`/dataset/${timestamp}/clone`);
+        body.should.have.property('dataset').and.instanceOf(Object);
+
+        const { datasetUrl, application } = body.dataset;
+        application.should.deep.equal(['your', 'apps']);
+        datasetUrl.should.equal(`/query/${timestamp}`);
     });
 
     afterEach(() => {

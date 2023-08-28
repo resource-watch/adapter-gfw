@@ -1,4 +1,4 @@
-import init from 'app';
+import { init } from 'app';
 import logger from 'logger';
 
 init().then(
