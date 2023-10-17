@@ -6,6 +6,7 @@ import { DatasetNotFound } from 'errors/datasetNotFound.error';
 class DatasetService {
     static async getDatasetById(
         datasetId: string,
+        apiKey: string,
     ): Promise<Record<string, any>> {
         logger.info(
             `[DatasetService - getDatasetById] Validating presence of dataset with id: ${datasetId}`,
@@ -15,7 +16,9 @@ class DatasetService {
             const dataset: Record<string, any> = await RWAPIMicroservice.requestToMicroservice({
                 uri: `/v1/dataset/${datasetId}`,
                 method: 'GET',
-                json: true,
+                headers: {
+                    'x-api-key': apiKey
+                }
             });
             return dataset.data;
         } catch (err) {

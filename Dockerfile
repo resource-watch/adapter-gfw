@@ -1,4 +1,4 @@
-FROM node:16-alpine
+FROM node:20.4-alpine3.18
 
 ENV NAME rw-adapter-gfw
 ENV USER rw-adapter-gfw
@@ -20,10 +20,11 @@ RUN cd /opt/$NAME && yarn
 
 COPY entrypoint.sh /opt/$NAME/entrypoint.sh
 COPY config /opt/$NAME/config
+COPY src /opt/$NAME/src
+COPY test /opt/$NAME/test
 
 WORKDIR /opt/$NAME
 
-COPY ./app /opt/$NAME/app
 RUN chown -R $USER:$USER /opt/$NAME
 
 # Tell Docker we are going to use this ports
