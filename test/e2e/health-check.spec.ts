@@ -2,7 +2,7 @@ import chai from 'chai';
 import nock from 'nock';
 
 import request from 'superagent';
-import { getTestAgent } from './utils/test-server';
+import { getTestServer } from './utils/test-server';
 
 let requester:ChaiHttp.Agent;
 
@@ -14,7 +14,7 @@ describe('GET healthcheck', () => {
             throw Error(`Running the test suite with NODE_ENV ${process.env.NODE_ENV} may result in permanent data loss. Please use NODE_ENV=test.`);
         }
 
-        requester = await getTestAgent();
+        requester = await getTestServer();
     });
 
     it('Checking the application\'s health should return a 200', async () => {

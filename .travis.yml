@@ -1,6 +1,6 @@
 language: node_js
 node_js:
-  - "16"
+  - "20.4"
 cache:
   directories:
     - "node_modules"
@@ -14,6 +14,9 @@ env:
     - NODE_PATH=app/src
     - PORT=3025
     - GFW_API_KEY=fake-key
+    - AWS_REGION=us-east-1
+    - AWS_ACCESS_KEY_ID=test
+    - AWS_SECRET_ACCESS_KEY=test
 
 before_script:
   - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter

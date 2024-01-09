@@ -1,7 +1,7 @@
 import { Method } from 'axios';
 import nock from 'nock';
 
-import { DEFAULT_RESPONSE_SQL_QUERY, DATASET_ATTRS } from './test.constants';
+import { DATASET_ATTRS, DEFAULT_RESPONSE_SQL_QUERY } from './test.constants';
 
 export const createMockConvertSQL: (sqlQuery: string) => void = (
     sqlQuery: string,
@@ -51,7 +51,11 @@ export const createMockSQLQuery: (
         .reply(200, response);
 };
 
-export const createMockRegisterDataset: (id: string) => void = (id) => nock(process.env.GATEWAY_URL).patch(`/v1/dataset/${id}`).reply(200, {});
+export const createMockRegisterDataset: (id: string) => void = (id) => nock(process.env.GATEWAY_URL, {
+    reqheaders: {
+        'x-api-key': 'api-key-test',
+    }
+}).patch(`/v1/dataset/${id}`).reply(200, {});
 
 export const createMockGetDataset: (
     id: string,
@@ -66,7 +70,12 @@ export const createMockGetDataset: (
         },
     };
 
-    nock(process.env.GATEWAY_URL).get(`/v1/dataset/${id}`).reply(200, {
+    nock(process.env.GATEWAY_URL, {
+        reqheaders: {
+            'x-api-key': 'api-key-test',
+        }
+    })
+        .get(`/v1/dataset/${id}`).reply(200, {
         data: dataset,
     });
 

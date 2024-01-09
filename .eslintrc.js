@@ -1,24 +1,66 @@
 module.exports = {
-  root: true,
-  parser: "@typescript-eslint/parser",
-  parserOptions: {
-    tsconfigDir: __dirname,
-    project: ["./tsconfig.json"],
-  },
-  plugins: ["@typescript-eslint", "mocha"],
-  extends: ["airbnb-base", "airbnb-typescript/base"],
-  globals: {
-    describe: true,
-    it: true,
-    before: true,
-    after: true,
-    beforeEach: true,
-    afterEach: true,
-  },
-  rules: {
-    "import/no-extraneous-dependencies": 0,
-    "react/jsx-filename-extension": 0,
-    "import/extensions": 0,
-    "@typescript-eslint/indent": [2, 4],
-  },
+    parser: '@typescript-eslint/parser',
+    parserOptions: {
+        project: 'tsconfig.json',
+        sourceType: 'module',
+    },
+    plugins: ['@typescript-eslint/eslint-plugin', 'mocha'],
+    extends: [
+        'plugin:@typescript-eslint/recommended',
+    ],
+    root: true,
+    env: {
+        node: true,
+    },
+    ignorePatterns: ['.eslintrc.js', 'test/**/*'],
+    rules: {
+        eqeqeq: 'error',
+        'no-restricted-imports': [
+            'error',
+            {
+                patterns: ['./*', '../*'],
+            },
+        ],
+        '@typescript-eslint/interface-name-prefix': 'off',
+        '@typescript-eslint/explicit-function-return-type': 'error',
+        '@typescript-eslint/explicit-module-boundary-types': 'off',
+        '@typescript-eslint/no-explicit-any': 'off',
+        '@typescript-eslint/no-inferrable-types': 'off',
+        '@typescript-eslint/typedef': [
+            'error',
+            {
+                arrayDestructuring: false,
+                arrowParameter: true,
+                memberVariableDeclaration: true,
+                objectDestructuring: false,
+                parameter: true,
+                propertyDeclaration: true,
+                variableDeclaration: true,
+                variableDeclarationIgnoreFunction: true,
+            },
+        ],
+    },
+    overrides: [
+        {
+            files: ['test/**/*.ts'],
+            rules: {
+                '@typescript-eslint/no-explicit-any': 'off',
+                '@typescript-eslint/no-inferrable-types': 'off',
+                'no-restricted-imports': 'off',
+                '@typescript-eslint/typedef': [
+                    'error',
+                    {
+                        arrayDestructuring: false,
+                        arrowParameter: true,
+                        memberVariableDeclaration: true,
+                        objectDestructuring: false,
+                        parameter: true,
+                        propertyDeclaration: true,
+                        variableDeclaration: false,
+                        variableDeclarationIgnoreFunction: true,
+                    },
+                ],
+            },
+        },
+    ],
 };

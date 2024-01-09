@@ -1,9 +1,10 @@
 import nock from 'nock';
 import chai from 'chai';
 
-import { getTestAgent } from './utils/test-server';
+import { getTestServer } from './utils/test-server';
 import { createMockRegisterDataset } from './utils/mock';
 import { DATASET } from './utils/test.constants';
+import { mockValidateRequestWithApiKey } from "./utils/helpers";
 
 let requester: ChaiHttp.Agent;
 
@@ -19,14 +20,16 @@ describe('Create GFW dataset tests', () => {
             );
         }
 
-        requester = await getTestAgent();
+        requester = await getTestServer();
     });
 
     it('Should create dataset', async () => {
+        mockValidateRequestWithApiKey({})
         createMockRegisterDataset(DATASET.data.id);
 
         const response: Record<string, any> = await requester
             .post('/api/v1/gfw/rest-datasets/gfw')
+            .set('x-api-key', 'api-key-test')
             .send({
                 connector: {
                     connectorUrl: DATASET.data.attributes.connectorUrl,

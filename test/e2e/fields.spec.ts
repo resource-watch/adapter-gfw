@@ -1,9 +1,9 @@
 import nock from 'nock';
 import chai from 'chai';
-import { getTestAgent } from './utils/test-server';
+import { getTestServer } from './utils/test-server';
 
 import { createMockGetDataset } from './utils/mock';
-import { ensureCorrectError } from './utils/helpers';
+import { ensureCorrectError, mockValidateRequestWithApiKey } from './utils/helpers';
 import { fields } from './utils/test.constants';
 
 let requester: ChaiHttp.Agent;
@@ -20,10 +20,11 @@ describe('GET fields', () => {
             );
         }
 
-        requester = await getTestAgent();
+        requester = await getTestServer();
     });
 
     it('Getting the fields for a dataset without connectorType document should fail', async () => {
+        mockValidateRequestWithApiKey({})
         const timestamp: string = String(new Date().getTime());
 
         createMockGetDataset(timestamp, { connectorType: 'foo' });
@@ -32,6 +33,7 @@ describe('GET fields', () => {
 
         const response: Record<string, any> = await requester
             .get(`/api/v1/gfw/fields/${timestamp}`)
+            .set('x-api-key', 'api-key-test')
             .send(requestBody);
 
         ensureCorrectError(
@@ -42,6 +44,7 @@ describe('GET fields', () => {
     });
 
     it('Getting the fields for a dataset without a supported provider should fail', async () => {
+        mockValidateRequestWithApiKey({})
         const timestamp: string = String(new Date().getTime());
 
         createMockGetDataset(timestamp, { provider: 'foo' });
@@ -50,6 +53,7 @@ describe('GET fields', () => {
 
         const response: Record<string, any> = await requester
             .get(`/api/v1/gfw/fields/${timestamp}`)
+            .set('x-api-key', 'api-key-test')
             .send(requestBody);
 
         ensureCorrectError(
@@ -60,6 +64,7 @@ describe('GET fields', () => {
     });
 
     it('Get fields correctly for a gfw dataset should return the field list (happy case)', async () => {
+        mockValidateRequestWithApiKey({})
         const timestamp: string = String(new Date().getTime());
 
         const dataset: Record<string, any> = createMockGetDataset(
@@ -75,6 +80,7 @@ describe('GET fields', () => {
 
         const response: Record<string, any> = await requester
             .get(`/api/v1/gfw/fields/${dataset.id}`)
+            .set('x-api-key', 'api-key-test')
             .send({});
 
         response.status.should.equal(200);

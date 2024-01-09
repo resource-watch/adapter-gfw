@@ -12,7 +12,7 @@ class DatasetMiddleware {
             ctx.throw(400, 'Invalid request');
         }
 
-        const dataset: Record<string, any> = await DatasetService.getDatasetById(datasetId);
+        const dataset: Record<string, any> = await DatasetService.getDatasetById(datasetId, ctx.request.headers['x-api-key'] as string);
 
         if (!dataset) {
             ctx.throw(404, 'Dataset not found');
@@ -26,6 +26,9 @@ class DatasetMiddleware {
             ctx.throw(422, 'This operation is only supported for datasets with provider \'gfw\'');
         }
 
+        if (!ctx.request.hasOwnProperty('body')) {
+            ctx.request.body = {};
+        }
         ctx.request.body.dataset = {
             id: dataset.id,
             ...dataset.attributes,
